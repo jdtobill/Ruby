@@ -3,7 +3,7 @@ Hangman Version 1.1
 Running the Game
 You must have Ruby installed to run this game.
 In the command line, navigate to the directory holding the 'hangman.rb' file.
-Type in 'hangman.rb' and hit enter to run the game.
+Type in 'ruby hangman.rb' and hit enter to run the game.
 
 Instructions
 
