@@ -3,14 +3,17 @@ require "csv"
 
 class Hangman
   def initialize(hits =[],miss = [" "],word_letters = nil)
-    welcome
     @valid_input = ("a".."z").to_a << "save"
     @miss = miss
     @hits = hits
     @word_list = "5desk.txt"
     if word_letters
+      puts "\n Your saved game has been loaded."
       @word_letters = word_letters
+      @word = @word_letters.join("")
+      display
     else
+      welcome
       secret_word
       process_word
     end
@@ -38,7 +41,7 @@ class Hangman
 
   def player_guess
     puts "__________________________________"
-    puts "Your choice:"
+    puts "Enter a letter or 'save' \nto save the game "
     @input = gets.chomp.downcase
     puts "__________________________________"
   end
@@ -76,33 +79,35 @@ class Hangman
 
   def check_win
     if @hits.all? {|x| @valid_input.include?(x)}
-      puts "YOU GUESSED IT!"
+
+      puts "/n YOU GUESSED IT!"
       reset?
     end
+  end
+
+  def display
+    view
+    puts "\nWrong Guesses:"
+    @miss.each {|miss| print miss + " "}
+    puts "\n\nCorrect Guesses:"
+    @hits.each {|hit| print "#{hit} "}
+    puts " "
   end
 
   def check_word
     if @word_letters.include?(@input)
       @word_letters.each_with_index { |letter, index| @hits[index] = @input if letter == @input }
       puts "Correct! '#{@input}' is in the word!"
-      view
     elsif !@miss.include?(@input)
       @miss << @input
       puts "Sorry! '#{@input}' is not in the word!"
-      view
     end
-    puts " "
-    puts "Wrong Guesses:"
-    @miss.each {|miss| print miss}
-    puts " \n"
-    puts "Correct Guesses:"
-    @hits.each {|hit| print "#{hit} "}
-    puts " "
+    display
     check_win
   end
 
   def play
-    while @miss.size != 7
+    while @miss.size != 11
       player_guess
       check_guess
       check_word
@@ -126,7 +131,7 @@ class Hangman
     puts "\nPlease enter 'Load' to load a saved game, or 'New' to start a new game!"
     answer = gets.chomp.downcase
     if answer == 'new'
-      Hangman.new
+      Hangman.new.play.display
     elsif answer == 'load'
       load
     else
@@ -149,6 +154,11 @@ class Hangman
         choice = gets.chomp.downcase
         CSV.foreach(saves) do |row|
           if choice == row[0]
+            puts " \n Retrieving file \n "
+            4.times do
+              puts ". "
+              sleep(1)
+            end
             Hangman.new(row[1].split(""), row[2].split(""),row[3].split("")).play
           else
             puts "This game does not exist"
