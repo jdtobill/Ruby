@@ -1,2 +1,2 @@
 Ruby Challenges
-+ Solutions to Programming Languages Written in Ruby.
++ Solutions to Programming Challenges Written in Ruby.
